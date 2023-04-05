@@ -37,7 +37,7 @@ jobs:
 
           script: |
             echo Hello World!
-            cd memories
+            cd /home/ubuntu/memories
             git fetch
             git pull origin/main
             cd client/
