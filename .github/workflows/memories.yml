@@ -35,17 +35,36 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
 
-          script: |
-            echo Hello World!
-            ls
-            cd /home/ubuntu/memories
-            git fetch
-            git pull origin/main
-            cd client/
-            npm i && npm run build
-            mv build /var/www/
-            cd ..
-            systemctl reload nginx
-            cd server/
-            npm i 
-            npm start
+
+
+      - name: Build application
+        run: |
+          cd $GITHUB_WORKSPACE
+          npm install
+          npm run build
+          
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${USER_NAME}@${HOSTNAME} "sudo rm -rf /var/www/html/*"
+          scp -o StrictHostKeyChecking=no -r $GITHUB_WORKSPACE/build/* ${USER_NAME}@${HOSTNAME}:/var/www/html/
+          ssh -o StrictHostKeyChecking=no ${USER_NAME}@${HOSTNAME} "sudo rm -f /etc/nginx/sites-enabled/default"
+          # scp -o StrictHostKeyChecking=no nginx.conf ${USER_NAME}@${HOSTNAME}:/tmp/
+          # ssh -o StrictHostKeyChecking=no ${USER_NAME}@${HOSTNAME} "sudo mv /tmp/nginx.conf /etc/nginx/sites-available/default"
+          # ssh -o StrictHostKeyChecking=no ${USER_NAME}@${HOSTNAME} "sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default"
+          ssh -o StrictHostKeyChecking=no ${USER_NAME}@${HOSTNAME} "sudo service nginx restart"
+
+
+          # script: |
+          #   echo Hello World!
+          #   ls
+          #   cd /home/ubuntu/memories
+          #   git fetch
+          #   git pull origin/main
+          #   cd client/
+          #   npm i && npm run build
+          #   mv build /var/www/
+          #   cd ..
+          #   systemctl reload nginx
+          #   cd server/
+          #   npm i 
+          #   npm start
