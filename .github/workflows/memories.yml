@@ -37,3 +37,15 @@ jobs:
 
           script: |
             echo Hello World!
+            cd memories
+            git fetch
+            git pull origin/main
+            cd client/
+            npm i && npm run build
+            mv build /var/www/
+            cd ..
+            systemctl reload nginx
+            cd server/
+            npm i 
+            npm start
+
