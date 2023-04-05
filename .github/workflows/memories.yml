@@ -37,6 +37,7 @@ jobs:
 
           script: |
             echo Hello World!
+            ls
             cd /home/ubuntu/memories
             git fetch
             git pull origin/main
