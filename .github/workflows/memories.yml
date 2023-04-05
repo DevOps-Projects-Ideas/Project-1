@@ -27,13 +27,12 @@ jobs:
 
       # SSH into our remote server
       - name: SSH in ec2 remote server
-              env:
-                PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
-                HOSTNAME:  ${{ secrets.HOSTNAME }}
-                USER_NAME:  ${{ secrets.AWS_USERNAME }}
-              run:  |
-                echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-                ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
+        env:
+          PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
+          HOSTNAME:  ${{ secrets.HOSTNAME }}
+          USER_NAME:  ${{ secrets.AWS_USERNAME }}
+        run:  |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
 
-                script: echo Hello World!
-                
+          script: echo Hello World!
